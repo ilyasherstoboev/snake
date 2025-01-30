@@ -33,7 +33,7 @@ export default function () {
    * Движение дальше
    */
   const moveSnake = () => {
-    if (!currentMove.value || optionHasBot.value ) {
+    if (!currentMove.value || optionHasBot.value) {
       return;
     }
 
@@ -232,7 +232,7 @@ export default function () {
   };
 
   interface IDirect {
-    [key: string]: () => number
+    [key: string]: () => number;
   }
 
   /**
