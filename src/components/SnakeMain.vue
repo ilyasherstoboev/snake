@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IPoint, IPosition } from '../../app/interfaces/snake.ts'
+import type { IPoint, IPosition } from '../../app/interfaces/snake.ts';
 
   interface IProps {
     positions: IPosition[],
@@ -48,7 +48,7 @@ import type { IPoint, IPosition } from '../../app/interfaces/snake.ts'
   &__snake {
     width: 20px;
     height: 20px;
-    background: red;
+    background: $red;
   }
 
   &__point {
