@@ -1,6 +1,6 @@
 import config from '../../constants/config';
 import type { ICoordinate, IFirstRow, IMove } from '../../interfaces/snake.ts';
-import { DEFAULT_POSITION, DIRECTION } from '../../constants/snake';
+import { DEFAULT_POSITION, DIRECTION, KEYS } from '../../constants/snake';
 import { ref } from 'vue';
 
 import { TemplatesService } from '../../services/templates.ts';
@@ -8,6 +8,7 @@ import { TemplatesService } from '../../services/templates.ts';
 import useSharedState from './useSharedState.ts';
 import useOptions from './useOptions.ts';
 import useModal from '../useModal.ts';
+import { MODAL_NAME } from '../../interfaces/template.ts';
 
 export default function () {
   const { generateKey } = TemplatesService;
@@ -45,7 +46,7 @@ export default function () {
 
     if (!checkLimit(actualMove)) {
       clearData();
-      changeActiveModal('over');
+      changeActiveModal(MODAL_NAME.OVER);
       return;
     }
 
@@ -58,7 +59,7 @@ export default function () {
     actualCoordinates[test] = actualMove;
     if (!optionHasEat.value && isEatMyself(actualCoordinates)) {
       clearData();
-      changeActiveModal('ate');
+      changeActiveModal(MODAL_NAME.ATE);
       return;
     }
 
@@ -124,7 +125,7 @@ export default function () {
       randomY = TemplatesService.randomLimit('y');
 
       if (positions.length > 30 * 30 - 1) {
-        changeActiveModal('end');
+        changeActiveModal(MODAL_NAME.END);
         clearData();
         break;
       }
@@ -148,7 +149,7 @@ export default function () {
    * @param coordinate
    */
   const move = async (coordinate = { ...positions[0] }) => {
-    const steps: IMove[] = ['DOWN', 'UP'];
+    const steps: IMove[] = [KEYS.DOWN, KEYS.UP];
 
     while (coordinate.x < config.limit.x) {
       await step(steps[0], coordinate);
@@ -167,7 +168,7 @@ export default function () {
 
     await turn(coordinate, () => (coordinate.y -= 1));
     await turn(coordinate, () => (coordinate.x -= 1));
-    await step('LEFT', coordinate);
+    await step(KEYS.LEFT, coordinate);
 
     if (!currentMove.value) {
       clearData();
@@ -200,15 +201,15 @@ export default function () {
       return;
     }
     const firstRow: IFirstRow = {
-      UP: {
+      [KEYS.UP]: {
         condition: () => coordinate.y > 2,
         action: () => (coordinate.y -= 1),
       },
-      LEFT: {
+      [KEYS.LEFT]: {
         condition: () => coordinate.x > 1,
         action: () => (coordinate.x -= 1),
       },
-      DOWN: {
+      [KEYS.DOWN]: {
         condition: () => coordinate.y < config.limit.y,
         action: () => (coordinate.y += 1),
       },
@@ -239,10 +240,10 @@ export default function () {
    * Шаг направление змеи
    */
   const snakeDirect: IDirect = {
-    UP: () => positions[0].y - 1,
-    LEFT: () => positions[0].x - 1,
-    DOWN: () => positions[0].y + 1,
-    RIGHT: () => positions[0].x + 1,
+    [KEYS.UP]: () => positions[0].y - 1,
+    [KEYS.LEFT]: () => positions[0].x - 1,
+    [KEYS.DOWN]: () => positions[0].y + 1,
+    [KEYS.RIGHT]: () => positions[0].x + 1,
   };
 
   return {

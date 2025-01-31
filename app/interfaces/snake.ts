@@ -31,3 +31,5 @@ export interface IFirstRow {
     action: () => void
   }
 }
+
+export type TArrowEvent = 'ArrowUp' | 'ArrowLeft' | 'ArrowDown' | 'ArrowRight'

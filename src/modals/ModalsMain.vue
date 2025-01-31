@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import ModalsEat from '@/modals/ModalsEat.vue';
-import ModalsOver from '@/modals/ModalsOver.vue';
-import ModalsOptions from '@/modals/ModalsOptions.vue';
-import ModalsEnd from '@/modals/ModalsEnd.vue';
-
 import { inject } from 'vue';
 import { type Ref } from 'vue';
+
+import { MODALS } from '../../app/constants/template.ts';
 
 interface IActiveModal {
   activeModal: Ref<string>
   changeActiveModal: (val: string) => void
 }
 
-type TModalKey = 'over' | 'ate' | 'options' | 'end';
+type TModalKey = 'OVER' | 'ATE' | 'OPTIONS' | 'END';
 
 const activeModalInject = inject<IActiveModal>('activeModal');
 
@@ -26,14 +23,7 @@ const {
 } = activeModalInject;
 
 const getContent = () => {
-  return activeModal ? modals[activeModal.value as TModalKey] : modals.over;
-};
-
-const modals = {
-  over: ModalsOver,
-  ate: ModalsEat,
-  options: ModalsOptions,
-  end: ModalsEnd,
+  return activeModal ? MODALS[activeModal.value as TModalKey] : MODALS.OVER;
 };
 
 const closeModal = () => {

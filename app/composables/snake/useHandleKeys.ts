@@ -1,7 +1,10 @@
 import useSharedState from './useSharedState';
 import useGameplay from './useGameplay';
 import { onMounted } from 'vue';
-import { KEY_DIRECTION } from '../../constants/snake.ts';
+
+import { KEY_DIRECTION, OPPOSITE_DIRECTION_MAP, ARROW_KEYS, KEYS } from '../../constants/snake.ts';
+
+import { type TArrowEvent } from '../../interfaces/snake.ts';
 
 export default function () {
   const { activeModal, currentMove, newGame } = useSharedState();
@@ -11,21 +14,14 @@ export default function () {
    * привязка к клавишам
    * @param event
    */
-  const handleKeydown = async (event: KeyboardEvent | { key: TArrowEvent}) => {
+  const handleKeydown = async (event: KeyboardEvent | Record<string, TArrowEvent>) => {
     if (activeModal.value) {
       return;
     }
     const newDirection = KEY_DIRECTION[event.key as keyof typeof KEY_DIRECTION];
 
     if (newDirection && newDirection !== currentMove.value) {
-      const oppositeDirectionMap = {
-        UP: 'DOWN',
-        DOWN: 'UP',
-        LEFT: 'RIGHT',
-        RIGHT: 'LEFT',
-      };
-
-      if (currentMove.value !== oppositeDirectionMap[newDirection]) {
+      if (currentMove.value !== OPPOSITE_DIRECTION_MAP[newDirection]) {
         currentMove.value = newDirection;
         clearInterval(newGame.value);
         moveSnake();
@@ -34,16 +30,14 @@ export default function () {
     }
   };
 
-  type TArrowEvent = 'ArrowUp' | 'ArrowLeft' | 'ArrowDown' | 'ArrowRight'
-
   /**
    * Изменение направления движения
    */
   const handlers = {
-    UP: () => handleKeydown({ key: 'ArrowUp' }),
-    LEFT: () => handleKeydown({ key: 'ArrowLeft' }),
-    DOWN: () => handleKeydown({ key: 'ArrowDown' }),
-    RIGHT: () => handleKeydown({ key: 'ArrowRight' }),
+    [KEYS.UP]: () => handleKeydown({ key: ARROW_KEYS.ARROW_UP }),
+    [KEYS.LEFT]: () => handleKeydown({ key: ARROW_KEYS.ArrowLeft }),
+    [KEYS.DOWN]: () => handleKeydown({ key: ARROW_KEYS.ARROW_DOWN }),
+    [KEYS.RIGHT]: () => handleKeydown({ key: ARROW_KEYS.ArrowRight }),
   };
 
   onMounted(() => {

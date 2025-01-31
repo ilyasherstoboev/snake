@@ -1,5 +1,7 @@
 import { provide } from 'vue';
 import useSharedState from './snake/useSharedState.ts';
+import { MODAL_NAME } from '../interfaces/template.ts';
+import { PROVIDE_KEYS } from '../constants/template.ts';
 
 export default function () {
   const { activeModal } = useSharedState();
@@ -17,10 +19,10 @@ export default function () {
   };
 
   const showOptions = (): void => {
-    changeActiveModal('options');
+    changeActiveModal(MODAL_NAME.OPTIONS);
   };
 
-  provide('activeModal', { activeModal, changeActiveModal });
+  provide(PROVIDE_KEYS.ACTIVE_MODAL, { activeModal, changeActiveModal });
 
   return {
     closeTab,
