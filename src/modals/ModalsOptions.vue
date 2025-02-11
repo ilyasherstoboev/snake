@@ -16,7 +16,6 @@ if (!optionsInjection) {
 }
 
 const { options }: { options: Ref<string[]> } = optionsInjection;
-
 const saveOptions = () => {
   LocalStorage.set(LOCAL_STORAGE.options, options.value);
   closeModal();
@@ -38,8 +37,12 @@ const saveOptions = () => {
     </div>
     <template #navigation>
       <div class="modal__navigation">
-        <button class="modal__button modal__button_close" @click="closeModal">close</button>
-        <button class="modal__button modal__button_continue" @click="saveOptions">save</button>
+        <button data-test="close" class="modal__button modal__button_close" @click="closeModal">
+          close
+        </button>
+        <button data-test="save" class="modal__button modal__button_continue" @click="saveOptions">
+          save
+        </button>
       </div>
     </template>
   </template-modals>

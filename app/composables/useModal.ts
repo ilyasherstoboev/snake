@@ -15,7 +15,7 @@ export default function () {
   };
 
   const closeTab = () => {
-    close();
+    window.close();
   };
 
   const showOptions = (): void => {
@@ -28,6 +28,6 @@ export default function () {
     closeTab,
     closeModal,
     showOptions,
-    changeActiveModal
+    changeActiveModal,
   };
 }

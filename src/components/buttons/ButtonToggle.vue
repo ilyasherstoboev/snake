@@ -6,8 +6,8 @@ const props = defineProps({
   },
   value: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const model = defineModel();
@@ -15,7 +15,13 @@ const model = defineModel();
 
 <template>
   <label class="button-checkbox" :for="props.id">
-    <input :id="props.id" class="button-checkbox__input" type="checkbox" v-model="model" :value="props.value">
+    <input
+      :id="props.id"
+      class="button-checkbox__input"
+      type="checkbox"
+      v-model="model"
+      :value="props.value"
+    />
   </label>
 </template>
 
@@ -27,7 +33,8 @@ const model = defineModel();
   height: 30px;
   border: 2px solid black;
 
-  &:before, &:after {
+  &:before,
+  &:after {
     top: 50%;
     position: absolute;
     transform: translate(0, -50%);
@@ -57,7 +64,7 @@ const model = defineModel();
     }
     &:before {
       border: 2px solid black;
-      content: "";
+      content: '';
       height: 26px;
       width: 30px;
       background: #ecec68;

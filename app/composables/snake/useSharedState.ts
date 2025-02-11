@@ -14,13 +14,13 @@ const point: Reactive<IPoint> = reactive({ ...DEFAULT_POINT });
 const positions: Reactive<IPosition[]> = reactive([{ ...DEFAULT_POSITION }]);
 const newGame: Ref<number> = ref(0);
 
-export default function() {
+export default function () {
   return {
     newGame,
     point,
     positions,
     currentMove,
     activeModal,
-    options
+    options,
   };
 }
