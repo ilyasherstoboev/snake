@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { PROPS } from '../../app/constants/template';
+
 interface Props {
   title?: string;
   description?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: () => 'game over',
-  description: () => 'do you want to continue?',
+  title: () => PROPS.modalContent.title,
+  description: () => PROPS.modalContent.description,
 });
 </script>
 
