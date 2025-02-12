@@ -6,10 +6,10 @@ const emits = defineEmits(['UP', 'LEFT', 'RIGHT', 'DOWN']);
 
 <template>
   <div class="snake-arrows">
-    <ButtonArrow class="snake-arrows__button snake-arrows__button_up" @click="emits('UP')" />
-    <ButtonArrow class="snake-arrows__button snake-arrows__button_left" @click="emits('LEFT')" />
-    <ButtonArrow class="snake-arrows__button snake-arrows__button_down" @click="emits('DOWN')" />
-    <ButtonArrow class="snake-arrows__button snake-arrows__button_right" @click="emits('RIGHT')" />
+    <button-arrow class="snake-arrows__button snake-arrows__button_up" @click="emits('UP')" />
+    <button-arrow class="snake-arrows__button snake-arrows__button_left" @click="emits('LEFT')" />
+    <button-arrow class="snake-arrows__button snake-arrows__button_down" @click="emits('DOWN')" />
+    <button-arrow class="snake-arrows__button snake-arrows__button_right" @click="emits('RIGHT')" />
   </div>
 </template>
 
