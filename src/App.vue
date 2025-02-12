@@ -16,7 +16,7 @@ const { positions, handlers, showOptions, point, currentMove, endGame, options }
       <snake-main :positions="positions" :point="point" />
     </template>
     <template #arrows>
-      <SnakeArrows v-on="handlers" v-if="options?.includes('Arrows')" />
+      <snake-arrows v-on="handlers" v-if="options?.includes('Arrows')" />
     </template>
   </template-snake>
 </template>
