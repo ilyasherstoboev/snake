@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TemplateSnake from '@/templates/TamplateSnake.vue';
+import TemplateSnake from '@/templates/TemplateSnake.vue';
 import SnakeMain from '@/components/SnakeMain.vue';
 import SnakeArrows from '@/components/SnakeArrows.vue';
 import ModalsMain from '@/modals/ModalsMain.vue';
@@ -10,13 +10,13 @@ const { positions, handlers, showOptions, point, currentMove, endGame, options }
 </script>
 
 <template>
-  <ModalsMain />
-  <TemplateSnake @options="showOptions" @end="endGame" :active-options="!currentMove">
+  <modals-main />
+  <template-snake @options="showOptions" @end="endGame" :active-options="!currentMove">
     <template #content>
-      <SnakeMain :positions="positions" :point="point" />
+      <snake-main :positions="positions" :point="point" />
     </template>
     <template #arrows>
       <SnakeArrows v-on="handlers" v-if="options?.includes('Arrows')" />
     </template>
-  </TemplateSnake>
+  </template-snake>
 </template>
