@@ -1,6 +1,10 @@
+<script lang='ts' setup>
+import { IMAGES } from '../../../app/constants/template.ts';
+</script>
+
 <template>
   <button class="button-arrow">
-    <img class="button-arrow__image" src="https://static.thenounproject.com/png/801787-200.png" alt="стрелка">
+    <img class="button-arrow__image" :src="IMAGES.ARROW" alt="стрелка">
   </button>
 </template>
 

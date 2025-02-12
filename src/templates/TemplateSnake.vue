@@ -12,16 +12,25 @@ const props = defineProps({
 <template>
   <div class="snake">
     <div class="snake__navigation">
-      <SnakeNavigator @click="emits('options')" :disabled="!props.activeOptions"
-        >Options</SnakeNavigator
+      <snake-navigator
+        data-test="options"
+        @click="emits('options')"
+        :disabled="!props.activeOptions"
       >
-      <SnakeNavigator @click="emits('end')" :disabled="props.activeOptions" modifier="yellow">
+        Options
+      </snake-navigator>
+      <snake-navigator
+        data-test="end"
+        @click="emits('end')"
+        :disabled="props.activeOptions"
+        modifier="yellow"
+      >
         End game
-      </SnakeNavigator>
+      </snake-navigator>
     </div>
     <div class="snake__content">
-      <slot name="content"></slot>
-      <slot name="arrows"></slot>
+      <slot name="content" />
+      <slot name="arrows" />
     </div>
   </div>
 </template>

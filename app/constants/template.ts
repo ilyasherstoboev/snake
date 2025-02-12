@@ -17,3 +17,14 @@ export const MODALS: Record<MODAL_NAME, Component> = {
   [MODAL_NAME.OPTIONS]: ModalsOptions,
   [MODAL_NAME.END]: ModalsEnd,
 };
+
+export const IMAGES = {
+  ARROW: 'https://static.thenounproject.com/png/801787-200.png',
+};
+
+export const PROPS = {
+  modalContent: {
+    title: 'game over',
+    description: 'do you want to continue?',
+  },
+};

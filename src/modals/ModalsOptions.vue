@@ -26,7 +26,7 @@ const saveOptions = () => {
   <template-modals @close="closeModal" class="modal">
     <div class="modal__content">
       <h1 class="modal__title">Options</h1>
-      <UiToggle
+      <ui-toggle
         v-for="option in OPTIONS"
         v-model="options"
         :key="option.id"
