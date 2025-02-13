@@ -4,7 +4,8 @@ export default {
       const res = localStorage.getItem(key);
       return res ? JSON.parse(res) : null;
     } catch (e) {
-      return e;
+      console.log(e);
+      return null;
     }
   },
   set(key: string, payload: string[]) {
@@ -13,10 +14,9 @@ export default {
         localStorage.setItem(key, JSON.stringify(payload));
         return;
       }
-      throw new Error("Что-то пошло не так");
+      throw new Error('Что-то пошло не так');
     } catch (e) {
       console.log(e);
-      return null;
     }
   },
 };

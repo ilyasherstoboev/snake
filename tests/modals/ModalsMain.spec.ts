@@ -6,6 +6,10 @@ import { MODAL_NAME } from '../../app/interfaces/template';
 import ModalsOver from '../../src/modals/ModalsOver.vue';
 
 describe('ModalsMain', () => {
+  it('Проверка ошибки при пустом inject', () => {
+    expect(() => mount(ModalsMain)).toThrowError('Injection "activeModal" not found');
+  });
+
   it.each(Object.keys(MODAL_NAME))(`рендер модалки %s`, (modal) => {
     const wrapperModal = mount(ModalsMain, {
       shallow: true,

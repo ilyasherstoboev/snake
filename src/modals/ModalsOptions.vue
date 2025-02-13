@@ -16,6 +16,7 @@ if (!optionsInjection) {
 }
 
 const { options }: { options: Ref<string[]> } = optionsInjection;
+
 const saveOptions = () => {
   LocalStorage.set(LOCAL_STORAGE.options, options.value);
   closeModal();
@@ -23,7 +24,7 @@ const saveOptions = () => {
 </script>
 
 <template>
-  <template-modals @close="closeModal" class="modal">
+  <template-modals @close="closeModal" v-if="options">
     <div class="modal__content">
       <h1 class="modal__title">Options</h1>
       <ui-toggle

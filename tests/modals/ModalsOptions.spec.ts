@@ -6,7 +6,6 @@ import { OPTIONS } from '../../app/constants/config';
 import { ref } from 'vue';
 import LocalStorage from '../../app/services/localStorage.ts';
 import LOCAL_STORAGE from '../../app/constants/localStorage.ts';
-import UiToggle from '@/components/ui/UiToggle.vue';
 
 const closeModal = vi.fn();
 
@@ -39,6 +38,10 @@ describe('ModalOptions', () => {
 
   it('Рендер модалки', () => {
     expect(initShallowWrapper().findComponent(TemplateModals).exists()).toBe(true);
+  });
+
+  it('Ошибка при пустом inject', () => {
+    expect(() => mount(ModalsOptions)).toThrowError('Injection "options" not found');
   });
 
   it('События модалки', async () => {
