@@ -1,30 +1,44 @@
 import config from '../../constants/config';
-import type { ICoordinate, IFirstRow, IMove } from '../../interfaces/snake.ts';
 import { DEFAULT_POSITION, DIRECTION, KEYS } from '../../constants/snake';
-import { ref } from 'vue';
+
+import type { ICoordinate, IFirstRow, IMove } from '../../interfaces/snake.ts';
+import { MODAL_NAME } from '../../interfaces/template.ts';
 
 import { TemplatesService } from '../../services/templates.ts';
+
+import {
+  delay,
+  eatPoint,
+  initSnakeDirect,
+  initTurns,
+  checkIsEatMyself,
+  moveBorder,
+} from '../../utilits/composables.ts';
 
 import useSharedState from './useSharedState.ts';
 import useOptions from './useOptions.ts';
 import useModal from '../useModal.ts';
-import { MODAL_NAME } from '../../interfaces/template.ts';
 
 export default function () {
-  const { generateKey } = TemplatesService;
   const { newGame, positions, currentMove, point } = useSharedState();
-  const { optionHasBot, optionHasEat, optionHasBorder } = useOptions();
+  const { isBotEnabled, isEatEnabled, isBorderEnabled } = useOptions();
   const { changeActiveModal } = useModal();
+  const snakeDirect = initSnakeDirect(positions);
+  const [limitX, limitY] = [config.limit.x, config.limit.y];
 
-  const delayMS = ref(1);
-  const delay = (ms = delayMS.value) => new Promise((res) => setTimeout(res, ms));
+  const eatAndCreatePoint = (newHeadPosition: ICoordinate) => {
+    const beforeEatLength = positions.length;
 
-  /**
-   * Создание интервала
-   */
-  const startGame = async () => {
-    if (optionHasBot.value) {
-      await move(positions[0]);
+    eatPoint({ positions, newHeadPosition, point });
+
+    if (beforeEatLength < positions.length) {
+      setRandomPoint();
+    }
+  };
+
+  const startBotOrInterval = async () => {
+    if (isBotEnabled.value) {
+      await moveBot(positions[0]);
       return;
     }
     newGame.value = window.setInterval(moveSnake, config.speed);
@@ -34,192 +48,113 @@ export default function () {
    * Движение дальше
    */
   const moveSnake = () => {
-    if (!currentMove.value || optionHasBot.value) {
+    if (!currentMove.value || isBotEnabled.value) {
       return;
     }
 
-    /**
-     * @const {number} actualMove - Текущее направление движения змейки.
-     * координаты направления по оси 1-limit
-     */
-    const actualMove = snakeDirect[currentMove.value]();
-
-    if (!checkLimit(actualMove)) {
-      clearData();
-      changeActiveModal(MODAL_NAME.OVER);
-      return;
-    }
-
-    let actualCoordinates: ICoordinate = {
+    const nextStep = snakeDirect[currentMove.value]();
+    const didectionKey = DIRECTION[currentMove.value];
+    let newHeadPosition: ICoordinate = {
       x: positions[0].x,
       y: positions[0].y,
+      [didectionKey]: nextStep,
     };
+    const isEatMyself = !isEatEnabled.value && checkIsEatMyself(positions, newHeadPosition);
+    const modalName = !checkLimit(nextStep) ? MODAL_NAME.OVER : isEatMyself ? MODAL_NAME.ATE : '';
 
-    const test = DIRECTION[currentMove.value];
-    actualCoordinates[test] = actualMove;
-    if (!optionHasEat.value && isEatMyself(actualCoordinates)) {
-      clearData();
-      changeActiveModal(MODAL_NAME.ATE);
+    if (modalName) {
+      endGameAndShowModal(modalName);
       return;
     }
 
-    if (optionHasBorder.value) {
-      actualCoordinates = moveBorder(actualCoordinates);
+    if (isBorderEnabled.value) {
+      newHeadPosition = moveBorder(newHeadPosition);
     }
 
-    eatPoint(actualCoordinates);
+    eatAndCreatePoint(newHeadPosition);
   };
 
-  /**
-   * Перекидывание на другую сторону границы
-   * @param actualCoordinates
-   */
-  const moveBorder = ({ x, y }: ICoordinate) => {
-    const { x: limitX, y: limitY } = config.limit;
-
-    return {
-      x: x < 1 ? limitX : x > limitX ? 1 : x,
-      y: y < 1 ? limitY : y > limitY ? 1 : y,
-    };
+  const endGameAndShowModal = (modal: MODAL_NAME) => {
+    clearData();
+    changeActiveModal(modal);
   };
 
-  /**
-   * Движение по координатам
-   * @param actualCoordinates
-   */
-  const eatPoint = (actualCoordinates: ICoordinate) => {
-    if (point.x === actualCoordinates.x && point.y === actualCoordinates.y) {
-      positions.unshift({
-        id: generateKey(),
-        x: point.x,
-        y: point.y,
-      });
-      setRandomPoint();
-    } else {
-      positions.unshift({
-        ...actualCoordinates,
-        id: generateKey(),
-      });
-      positions.pop();
-    }
-  };
-
-  /**
-   * Проверка съел ли себя
-   * @param x
-   * @param y
-   */
-  const isEatMyself = ({ x, y }: ICoordinate) => {
-    return positions.some(
-      (item) => x === item.x && y === item.y && item !== positions[positions.length - 1],
-    );
-  };
-
-  /**
-   * Полчение рандомной точки
-   */
   const setRandomPoint = () => {
-    let randomX: number, randomY: number;
+    let randomPointX: number, randomPointY: number;
+
     do {
-      randomX = TemplatesService.randomLimit('x');
-      randomY = TemplatesService.randomLimit('y');
+      [randomPointX, randomPointY] = [
+        TemplatesService.randomLimit('x'),
+        TemplatesService.randomLimit('y'),
+      ];
 
-      if (positions.length > 30 * 30 - 1) {
-        changeActiveModal(MODAL_NAME.END);
-        clearData();
-        break;
+      if (positions.length >= limitX * limitY) {
+        endGameAndShowModal(MODAL_NAME.END);
+        return;
       }
-    } while (positions.some((item) => item.x === randomX && item.y === randomY));
-    point.x = randomX;
-    point.y = randomY;
+    } while (positions.some((item) => item.x === randomPointX && item.y === randomPointY));
+
+    [point.x, point.y] = [randomPointX, randomPointY];
   };
 
-  /**
-   * Проверка не выходит ли за лимит
-   * @param actualMove
-   */
-  const checkLimit = (actualMove: number) => {
-    if (optionHasBorder.value) return true;
+  const checkLimit = (nextStep: number) => {
+    if (isBorderEnabled.value) return true;
 
-    return actualMove > 0 && actualMove < config.limit.x + 1 && actualMove < config.limit.y + 1;
+    return nextStep > 0 && nextStep < limitX + 1 && nextStep < limitY + 1;
   };
 
-  /**
-   * Движение бота
-   * @param coordinate
-   */
-  const move = async (coordinate = { ...positions[0] }) => {
-    const steps: IMove[] = [KEYS.DOWN, KEYS.UP];
+  const repeatMoves = async (steps: IMove[], botPosition: ICoordinate) => {
+    while (botPosition.x < limitX) {
+      await nextStepBot(steps[0], botPosition);
+      await turnBot(botPosition, () => (botPosition.x += 1));
+      await nextStepBot(steps[1], botPosition);
 
-    while (coordinate.x < config.limit.x) {
-      await step(steps[0], coordinate);
-      await turn(coordinate, () => (coordinate.x += 1));
-      await step(steps[1], coordinate);
-
-      if (coordinate.x < config.limit.x) {
-        await turn(coordinate, () => (coordinate.x += 1));
+      if (botPosition.x < limitX) {
+        await turnBot(botPosition, () => (botPosition.x += 1));
       }
 
       if (!currentMove.value) {
         clearData();
-        return;
       }
     }
+  };
 
-    await turn(coordinate, () => (coordinate.y -= 1));
-    await turn(coordinate, () => (coordinate.x -= 1));
-    await step(KEYS.LEFT, coordinate);
+  const moveBot = async (coordinate = { ...positions[0] }) => {
+    const steps: IMove[] = [KEYS.DOWN, KEYS.UP];
+
+    await repeatMoves(steps, coordinate);
+    await turnBot(coordinate, () => (coordinate.y -= 1));
+    await turnBot(coordinate, () => (coordinate.x -= 1));
+    await nextStepBot(KEYS.LEFT, coordinate);
 
     if (!currentMove.value) {
       clearData();
       return;
     }
     if (coordinate.y > 0) {
-      await move(coordinate);
+      await moveBot(coordinate);
     }
   };
 
-  /**
-   * Поворот бота
-   * @param coordinate
-   * @param func
-   */
-  const turn = async (coordinate: ICoordinate, func = () => {}) => {
-    func();
-    eatPoint(coordinate);
+  const turnBot = async (coordinate: ICoordinate, changeTurn = () => {}) => {
+    changeTurn();
+    eatAndCreatePoint(coordinate);
     await delay();
   };
 
-  /**
-   * Следующий шаг бота
-   * @param direction
-   * @param coordinate
-   */
-  const step = async (direction: IMove, coordinate: ICoordinate) => {
+  const nextStepBot = async (direction: IMove, coordinate: ICoordinate) => {
     if (!currentMove.value) {
       clearData();
       return;
     }
-    const firstRow: IFirstRow = {
-      [KEYS.UP]: {
-        condition: () => coordinate.y > 2,
-        action: () => (coordinate.y -= 1),
-      },
-      [KEYS.LEFT]: {
-        condition: () => coordinate.x > 1,
-        action: () => (coordinate.x -= 1),
-      },
-      [KEYS.DOWN]: {
-        condition: () => coordinate.y < config.limit.y,
-        action: () => (coordinate.y += 1),
-      },
-    };
+
+    const firstRow: IFirstRow = initTurns(coordinate);
     const { condition, action } = firstRow[direction];
 
     if (condition()) {
       action();
-      await turn(coordinate);
-      await step(direction, coordinate);
+      await turnBot(coordinate);
+      await nextStepBot(direction, coordinate);
     }
   };
 
@@ -232,23 +167,9 @@ export default function () {
     positions.splice(0, positions.length, { ...DEFAULT_POSITION });
   };
 
-  interface IDirect {
-    [key: string]: () => number;
-  }
-
-  /**
-   * Шаг направление змеи
-   */
-  const snakeDirect: IDirect = {
-    [KEYS.UP]: () => positions[0].y - 1,
-    [KEYS.LEFT]: () => positions[0].x - 1,
-    [KEYS.DOWN]: () => positions[0].y + 1,
-    [KEYS.RIGHT]: () => positions[0].x + 1,
-  };
-
   return {
     setRandomPoint,
-    startGame,
+    startGame: startBotOrInterval,
     moveSnake,
     endGame: clearData,
   };

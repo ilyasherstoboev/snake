@@ -7,6 +7,7 @@ import ModalsOver from '../../src/modals/ModalsOver.vue';
 
 describe('ModalsMain', () => {
   it('Проверка ошибки при пустом inject', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(() => mount(ModalsMain)).toThrowError('Injection "activeModal" not found');
   });
 

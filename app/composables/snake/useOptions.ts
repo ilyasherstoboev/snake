@@ -5,24 +5,24 @@ import { OPTIONS_VALUE } from '../../constants/config.ts';
 import { PROVIDE_KEYS } from '../../constants/template.ts';
 
 export default function () {
-  const { options }: { options: Ref<string[]>}  = useSharedState();
+  const { options }: { options: Ref<string[]> } = useSharedState();
   provide(PROVIDE_KEYS.OPTIONS, { options });
 
-  const optionHasEat: ComputedRef<boolean> = computed(() => {
+  const isEatEnabled: ComputedRef<boolean> = computed(() => {
     return options.value.includes(OPTIONS_VALUE.EAT);
   });
 
-  const optionHasBorder: ComputedRef<boolean> = computed(() => {
+  const isBorderEnabled: ComputedRef<boolean> = computed(() => {
     return options.value.includes(OPTIONS_VALUE.BORDER);
   });
 
-  const optionHasBot: ComputedRef<boolean> = computed(() => {
+  const isBotEnabled: ComputedRef<boolean> = computed(() => {
     return options.value.includes(OPTIONS_VALUE.BOT);
   });
 
   return {
-    optionHasEat,
-    optionHasBorder,
-    optionHasBot,
+    isEatEnabled,
+    isBorderEnabled,
+    isBotEnabled,
   };
 }
