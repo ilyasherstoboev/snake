@@ -1,49 +1,35 @@
 import useSharedState from './useSharedState';
 import useGameplay from './useGameplay';
 import { onMounted } from 'vue';
-import { KEY_DIRECTION } from '../../constants/snake.ts';
+
+import { KEY_DIRECTION, OPPOSITE_DIRECTION_MAP, ARROW_KEYS, KEYS } from '../../constants/snake.ts';
+
+import { type TArrowEvent } from '../../interfaces/snake.ts';
 
 export default function () {
   const { activeModal, currentMove, newGame } = useSharedState();
   const { moveSnake, startGame, setRandomPoint } = useGameplay();
 
-  /**
-   * привязка к клавишам
-   * @param event
-   */
-  const handleKeydown = async (event: KeyboardEvent | { key: TArrowEvent}) => {
-    if (activeModal.value) {
-      return;
-    }
+  const handleKeydown = async (event: KeyboardEvent | Record<string, TArrowEvent>) => {
     const newDirection = KEY_DIRECTION[event.key as keyof typeof KEY_DIRECTION];
 
-    if (newDirection && newDirection !== currentMove.value) {
-      const oppositeDirectionMap = {
-        UP: 'DOWN',
-        DOWN: 'UP',
-        LEFT: 'RIGHT',
-        RIGHT: 'LEFT',
-      };
+    if (activeModal.value || !newDirection || newDirection == currentMove.value) {
+      return;
+    }
 
-      if (currentMove.value !== oppositeDirectionMap[newDirection]) {
-        currentMove.value = newDirection;
-        clearInterval(newGame.value);
-        moveSnake();
-        await startGame();
-      }
+    if (currentMove.value !== OPPOSITE_DIRECTION_MAP[newDirection]) {
+      currentMove.value = newDirection;
+      clearInterval(newGame.value);
+      moveSnake();
+      await startGame();
     }
   };
 
-  type TArrowEvent = 'ArrowUp' | 'ArrowLeft' | 'ArrowDown' | 'ArrowRight'
-
-  /**
-   * Изменение направления движения
-   */
   const handlers = {
-    UP: () => handleKeydown({ key: 'ArrowUp' }),
-    LEFT: () => handleKeydown({ key: 'ArrowLeft' }),
-    DOWN: () => handleKeydown({ key: 'ArrowDown' }),
-    RIGHT: () => handleKeydown({ key: 'ArrowRight' }),
+    [KEYS.UP]: () => handleKeydown({ key: ARROW_KEYS.ARROW_UP }),
+    [KEYS.LEFT]: () => handleKeydown({ key: ARROW_KEYS.ARROW_LEFT }),
+    [KEYS.DOWN]: () => handleKeydown({ key: ARROW_KEYS.ARROW_DOWN }),
+    [KEYS.RIGHT]: () => handleKeydown({ key: ARROW_KEYS.ARROW_RIGHT }),
   };
 
   onMounted(() => {

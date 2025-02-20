@@ -7,7 +7,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <button class="snake-navigator" :class="`snake-navigator_${props.modifier}`">
+  <button class="snake-navigator" :class="props.modifier ? `snake-navigator_${props.modifier}` : ''">
     <slot />
   </button>
 </template>
@@ -22,14 +22,14 @@ const props = defineProps({
     background: $buttonHover;
   }
   &_yellow {
-    background: yellow;
+    background: $buttonNeutral;
     &:hover {
-      background: #f6ff76;
+      background: $buttonNeutralHover;
     }
   }
   &:disabled {
     cursor: auto;
-    background: #979797;
+    background: $disabled;
   }
 }
 </style>

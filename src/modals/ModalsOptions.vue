@@ -24,10 +24,10 @@ const saveOptions = () => {
 </script>
 
 <template>
-  <template-modals @close="closeModal" class="modal">
+  <template-modals @close="closeModal" v-if="options">
     <div class="modal__content">
       <h1 class="modal__title">Options</h1>
-      <UiToggle
+      <ui-toggle
         v-for="option in OPTIONS"
         v-model="options"
         :key="option.id"
@@ -38,8 +38,12 @@ const saveOptions = () => {
     </div>
     <template #navigation>
       <div class="modal__navigation">
-        <button class="modal__button modal__button_close" @click="closeModal">close</button>
-        <button class="modal__button modal__button_continue" @click="saveOptions">save</button>
+        <button data-test="close" class="modal__button modal__button_close" @click="closeModal">
+          close
+        </button>
+        <button data-test="save" class="modal__button modal__button_continue" @click="saveOptions">
+          save
+        </button>
       </div>
     </template>
   </template-modals>

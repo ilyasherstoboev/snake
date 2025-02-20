@@ -18,7 +18,7 @@ const props = defineProps({
 <template>
   <div class="ui-toggle">
     <p class="ui-toggle__text">{{ props.label }}</p>
-    <ButtonToggle :id="props.id" v-model="model" :value="props.value"/>
+    <button-toggle :id="props.id" v-model="model" :value="props.value"/>
   </div>
 </template>
 

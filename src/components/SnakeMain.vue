@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import type { IPoint, IPosition } from '../../app/interfaces/snake.ts'
+import type { IPosition } from '../../app/interfaces/snake.ts';
+import { TemplatesService } from '../../app/services/templates.ts';
 
-  interface IProps {
-    positions: IPosition[],
-    point: {
-      x: number,
-      y: number,
-    }
-  }
-
-  const props = defineProps<IProps>();
-
-  const getStyleSnake = (item: IPoint) => {
-    return {
-      gridColumnStart: item.x,
-      gridRowStart: item.y,
-    };
+interface IProps {
+  positions: IPosition[];
+  point: {
+    x: number;
+    y: number;
   };
+}
+
+const props = defineProps<IProps>();
+
+const getStyleSnake = TemplatesService.getStyleSnake;
 </script>
 
 <template>
@@ -27,10 +23,7 @@ import type { IPoint, IPosition } from '../../app/interfaces/snake.ts'
       class="snake-main__snake"
       :style="getStyleSnake(item)"
     />
-    <div
-      class="snake-main__point"
-      :style="getStyleSnake(props.point)"
-    />
+    <div class="snake-main__point" :style="getStyleSnake(props.point)" />
   </div>
 </template>
 
@@ -48,7 +41,7 @@ import type { IPoint, IPosition } from '../../app/interfaces/snake.ts'
   &__snake {
     width: 20px;
     height: 20px;
-    background: red;
+    background: $red;
   }
 
   &__point {

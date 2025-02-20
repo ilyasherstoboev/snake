@@ -1,33 +1,47 @@
-export type IMove = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | ''
+import type { Reactive } from 'vue';
+
+export type IMove = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | '';
 
 export type IPoint = {
-  x: number,
-  y: number,
-}
+  x: number;
+  y: number;
+};
 
 export interface IPosition extends IPoint {
-  id: string
+  id: string;
 }
 
 export interface ICoordinate {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 export interface ISnake extends ICoordinate {
-  id: string
+  id: string;
 }
 
 export interface IDirection {
-  UP: 'y'
-  DOWN: 'y'
-  LEFT: 'x'
-  RIGHT: 'x'
+  UP: 'y';
+  DOWN: 'y';
+  LEFT: 'x';
+  RIGHT: 'x';
 }
 
 export interface IFirstRow {
   [key: string]: {
-    condition: () => boolean
-    action: () => void
-  }
+    condition: () => boolean;
+    action: () => void;
+  };
+}
+
+export type TArrowEvent = 'ArrowUp' | 'ArrowLeft' | 'ArrowDown' | 'ArrowRight';
+
+export interface IDirect {
+  [key: string]: () => number;
+}
+
+export interface IEatPoint {
+  positions: Reactive<IPosition[]>;
+  newHeadPosition: ICoordinate;
+  point: Reactive<IPoint>;
 }
