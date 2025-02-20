@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue';
-import { type Ref } from 'vue';
 
 import { MODALS, PROVIDE_KEYS } from '../../app/constants/template.ts';
-import { MODAL_NAME } from '../../app/interfaces/template.ts';
-
-interface IActiveModal {
-  activeModal: Ref<string>;
-  changeActiveModal: (val: string) => void;
-}
+import { MODAL_NAME, type IActiveModal } from '../../app/interfaces/template.ts';
 
 const activeModalInject = inject<IActiveModal>(PROVIDE_KEYS.ACTIVE_MODAL);
 

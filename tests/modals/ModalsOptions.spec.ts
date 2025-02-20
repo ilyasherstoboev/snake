@@ -41,6 +41,7 @@ describe('ModalOptions', () => {
   });
 
   it('Ошибка при пустом inject', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(() => mount(ModalsOptions)).toThrowError('Injection "options" not found');
   });
 

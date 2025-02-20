@@ -13,5 +13,5 @@ export const TemplatesService = {
       gridColumnStart: item.x,
       gridRowStart: item.y,
     };
-  }
+  },
 };

@@ -3,7 +3,7 @@ export default {
     x: 30,
     y: 30,
   },
-  speed: 80
+  speed: 80,
 };
 
 export const OPTIONS_VALUE = {

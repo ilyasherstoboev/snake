@@ -64,7 +64,7 @@ describe('App', () => {
     options.value = [];
   });
 
-  it.todo('Разобраться почему работает end', async () => {
+  it('Разобраться почему работает end', async () => {
     const wrapper = initWrapper();
 
     wrapper.findComponent(TemplateSnake).trigger('end');
